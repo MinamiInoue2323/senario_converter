@@ -13,9 +13,6 @@ import PySimpleGUI as sg
 
 
 
-
-
-
 def strip_colorcode(stylecode):
     a=stylecode.replace('color:','').replace(';','').replace('#','')
     a ="ff"+a
@@ -27,8 +24,8 @@ def html2excel(htmlpath,name):
     
     wb = openpyxl.Workbook()
     sheet = wb.active
-    namepath=name+".xlsx"
-    sheet.title=namepath
+    namepath=name
+    sheet.title="Log"
     
     #ログのファイルを開く(ファイル名や位置を変えたい場合は第一引数を変更)
     with open(htmlpath,mode='rt', encoding='utf-8') as f:
@@ -59,14 +56,15 @@ def html2excel(htmlpath,name):
 
 
 layout = [
-    [sg.Text("html ファイル名"), sg.InputText(), sg.FileBrowse(key="file1", file_types=(("html　ファイル","*.html"),))],
-    [sg.Text("保存ファイル名"), sg.InputText(key="new_file_name")],
+    [sg.Text("html ファイル名", size=(15, 1)), sg.InputText(), sg.FileBrowse(key="input_file", size=(10, 1), file_types=(("html　ファイル","*.html"),))],
+    [sg.Text("出力フォルダ ", size=(15, 1)), sg.InputText(), sg.SaveAs(key="output_file", size=(10, 1), file_types=(("Excel　ファイル","*.xlsx"),))],
     [sg.Submit(), sg.Cancel()],
 ]
+
 window = sg.Window("html converter", layout)
 event, values = window.read()
 
+html2excel(values["input_file"],values["output_file"])
 
-html2excel(values["file1"],values["new_file_name"])
-
+sg.popup("Completed!")
 window.close()
